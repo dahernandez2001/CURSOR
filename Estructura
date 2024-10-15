@@ -1,0 +1,40 @@
+DELIMITER $$
+
+CREATE PROCEDURE ProcesarArrendamientos()
+BEGIN
+
+    DECLARE usuario_var VARCHAR(40);
+    DECLARE calificacion_var VARCHAR(20);
+    DECLARE fin INT DEFAULT 0;
+
+   
+    DECLARE arrend_cursor CURSOR FOR
+        SELECT usuario, calificacion FROM Arrendamiento;
+
+  
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET fin = 1;
+
+  
+    OPEN arrend_cursor;
+
+  
+    read_loop: LOOP
+       
+        FETCH arrend_cursor INTO usuario_var, calificacion_var;
+
+      
+        IF fin = 1 THEN
+            LEAVE read_loop;
+        END IF;
+
+       
+        SELECT CONCAT('Usuario: ', usuario_var, ' - Calificación: ', calificacion_var) AS Resultado;
+    END LOOP;
+
+	
+    CLOSE arrend_cursor;
+END$$
+
+DELIMITER ;
+
+CALL ProcesarArrendamientos();
